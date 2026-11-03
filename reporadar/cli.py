@@ -13,6 +13,23 @@ from .render import render_facts, render_json, render_markdown, render_terminal
 from .score import Rating, rate
 
 
+def force_utf8_stdio() -> None:
+    """把 stdout/stderr 切到 UTF-8。
+
+    报告里有 ``★``、``█``、中文表头，Windows 上输出被重定向（管道、文件、CI 日志）时
+    Python 会用系统 ANSI 代码页（cp1252 / cp936）编码，直接 ``UnicodeEncodeError``。
+    控制台本身走 WriteConsoleW，固定成 UTF-8 不会造成乱码。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:  # pragma: no cover - 被替换成非 TextIOWrapper 的流
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (OSError, ValueError):  # pragma: no cover - 极少数不可重配的流
+            pass
+
+
 def normalize_repo(value: str) -> str:
     """接受 ``owner/repo``、``https://github.com/owner/repo`` 或带 .git 的写法。"""
     text = value.strip().rstrip("/")
@@ -108,6 +125,7 @@ def cmd_check(args: argparse.Namespace) -> int:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    force_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):
