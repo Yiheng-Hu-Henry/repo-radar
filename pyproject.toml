@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-radar"
+version = "0.1.0"
+description = "给 GitHub 仓库做体检：活跃度、issue、文档、发布、PR 五维打分，指出下一步该补什么"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Yiheng Hu" }]
+keywords = ["github", "cli", "repository", "health", "metrics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.scripts]
+reporadar = "reporadar.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Yiheng-Hu-Henry/repo-radar"
+Issues = "https://github.com/Yiheng-Hu-Henry/repo-radar/issues"
+
+[tool.setuptools]
+packages = ["reporadar"]
